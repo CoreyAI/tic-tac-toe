@@ -1,0 +1,32 @@
+:root {
+  --cell-dimension: 100px;
+  --grid-style: 3px solid black;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100vw;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-container {
+  display: grid;
+  grid-template-rows: repeat(3, var(--cell-dimension));
+  grid-template-columns: repeat(3, var(--cell-dimension));
+}
+
+.c21, .c22, .c23 {
+  border-bottom: var(--grid-style);
+  border-top: var(--grid-style);
+}
+
+.c12, .c22, .c32 {
+  border-left: var(--grid-style);
+  border-right: var(--grid-style);
+}
