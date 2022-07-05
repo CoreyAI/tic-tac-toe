@@ -10,6 +10,39 @@
 </head>
 <body>
   <div class="main-container">
+    <h1>Tic-Tac-Toe</h1>
+    <div class="user-interface">
+      <form class="player1" autocomplete="off">
+        <span>
+          <label for="user-name">Player 1:</label>
+          <input type="text" name="user-name" id="user-name"
+            value="player 1" minlength="1" maxlength="16" required>
+        </span>
+        <span>
+          <label for="user-mark">Mark:</label>
+          <input type="text" name="user-mark" id="user-mark" value="X"
+            value="X" minlength="1" maxlength="1" required>
+        </span>
+        <!-- <button type="submit">Submit</button> -->
+      </form>
+      <form class="player2" autocomplete="off">
+        <span>
+          <label for="user-name">Player 2:</label>
+          <input type="text" name="user-name" id="user-name" value="player 2"
+            value="player 2" minlength="1" maxlength="16" required>
+        </span>
+        <span>
+          <label for="user-mark">Mark:</label>
+          <input type="text" name="user-mark" id="user-mark" value="O"
+            value="O" minlength="1" maxlength="1" required>
+        </span>
+        <!-- <button type="submit">Submit</button> -->
+      </form>
+      <div class="UI-buttons">
+        <button type="submit">Play Game</button>
+        <button type="button">Reset Game</button>
+      </div>
+    </div>
     <div class="game-container">
       <div class="c1"></div>
       <div class="c2"></div>
@@ -20,6 +53,10 @@
       <div class="c7"></div>
       <div class="c8"></div>
       <div class="c9"></div>
+    </div>
+    <div class="message-container">
+      <div class="message">Test Message</div>
+      <button type="button">Replay</button>
     </div>
   </div>
 </body>
