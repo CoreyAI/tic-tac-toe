@@ -18,7 +18,7 @@ const gameBoard = (() => {
   const gameContainer = document.querySelectorAll(".game-container > div");
   gameContainer.forEach(cell => {
     cell.addEventListener("click", (e) => {
-      if (gameController.getGameEnd() == true) {
+      if (gameController.getGameState() == 2) {
         console.log("game is over");
       } else {
         gameController.playRound(e.target.className, e.target.innerText);
@@ -46,10 +46,12 @@ const gameController = (() => {
   const player1 = Player("player1", "X");
   const player2 = Player("player2", "O");
   let round = 1;
-  let gameEnd = false;
 
+  let gameState = 0;  // 0 = pregame, 1 = game, 2 = endgame.
+  
   // Getter for the end game state.
-  const getGameEnd = () => {return gameEnd};
+  const getGameState = () => {return gameState};
+  const setGameState = (value) => {gameState = value};
   
   // Returns the mark of the current player at the current round.
   const currentPlayerMark = () => {
@@ -83,14 +85,14 @@ const gameController = (() => {
     
     if (currentRound() >= 5) {
       if (winCheck()) {
-        gameEnd = true;
+        setGameState(2);
         return console.log(`winner, ${currentPlayerName()}`);
       } 
     }
     
     round++;
     if (round > 9) {
-      gameEnd = true;
+      setGameState(2);
       return console.log("game over");
     }
   }
@@ -132,5 +134,5 @@ const gameController = (() => {
     return false;
   }
 
-  return {playRound, currentPlayerMark, currentRound, getGameEnd};
+  return {playRound, currentPlayerMark, currentRound, getGameState, setGameState};
 })();
