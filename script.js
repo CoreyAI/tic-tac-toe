@@ -1,7 +1,9 @@
 const Player = (name, mark) => {
   const getName = () => {return name};
   const getMark = () => {return mark};
-  return {getName, getMark};
+  const setName = (userName) => name = userName;
+  const setMark = (userMark) => mark = userMark; 
+  return {getName, getMark, setName, setMark};
 }
 
 const gameBoard = (() => {
