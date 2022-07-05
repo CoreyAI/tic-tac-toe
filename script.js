@@ -1,31 +1,44 @@
 const Player = (name, mark) => {
-  const getName = () => name;
-  const getMark = () => mark;
-  return {name, mark};
+  const getName = () => {return name};
+  const getMark = () => {return mark};
+  return {getName, getMark};
 }
 
 const gameBoard = (() => {
   // Initializes game board array values.
-  let getBoard = ['','','','','','','','',''];
+  let board = ['','','','','','','','',''];
+
+  // Getter for the board array.
+  const getBoard = () => {
+    return board;
+  }
 
   // Adds interactivity with tic-tac-toe grid and calls upon the
   // playRound function.
   const gameContainer = document.querySelectorAll(".game-container > div");
   gameContainer.forEach(cell => {
     cell.addEventListener("click", (e) => {
-      let cellClassName = e.target.className;
-      let cellValue = e.target.innerText;
-      gameController.playRound(cellClassName, cellValue);
+      if (gameController.getGameEnd() == true) {
+        console.log("game is over");
+      } else {
+        gameController.playRound(e.target.className, e.target.innerText);
+      }
     });
   });
   
   // Inserts player mark into tic-tac-toe cell.
-  const placeMark = (cellName) => {
+  const placeMarkInGrid = (cellName) => {
     let cell = document.getElementsByClassName(cellName);
     cell[0].innerText = gameController.currentPlayerMark();
   }
+  
+  // Inserts player mark into the game array.
+  const placeMarkInArray = (cellName) => {
+    let index = parseInt(cellName.slice(1)) - 1;
+    board[index] = gameController.currentPlayerMark();
+  }
 
-  return {getBoard, placeMark};
+  return {getBoard, placeMarkInGrid, placeMarkInArray};
 })();
 
 const gameController = (() => {
@@ -33,13 +46,25 @@ const gameController = (() => {
   const player1 = Player("player1", "X");
   const player2 = Player("player2", "O");
   let round = 1;
+  let gameEnd = false;
+
+  // Getter for the end game state.
+  const getGameEnd = () => {return gameEnd};
   
-  // Returns the mark of the current player at a specific round.
+  // Returns the mark of the current player at the current round.
   const currentPlayerMark = () => {
     if (round % 2 == 0) {
-      return player2.mark;
+      return player2.getMark();
     }
-    return player1.mark;
+    return player1.getMark();
+  }
+  
+  // Returns the name of the current player at the current round.
+  const currentPlayerName = () => {
+    if (round % 2 == 0) {
+      return player2.getName();
+    }
+    return player1.getName();
   }
 
   // Returns the current round value.
@@ -53,13 +78,59 @@ const gameController = (() => {
       return;
     }
 
-    gameBoard.placeMark(cellName);
-
+    gameBoard.placeMarkInGrid(cellName);
+    gameBoard.placeMarkInArray(cellName);
+    
+    if (currentRound() >= 5) {
+      if (winCheck()) {
+        gameEnd = true;
+        return console.log(`winner, ${currentPlayerName()}`);
+      } 
+    }
+    
     round++;
     if (round > 9) {
+      gameEnd = true;
       return console.log("game over");
     }
   }
 
-  return {playRound, currentPlayerMark, currentRound};
+  const winCondition = () => {
+    let win = [
+      [0,1,2],[3,4,5],[6,7,8],    // All 3 tic-tac-toe rows.
+      [0,3,6],[1,4,7],[2,5,8],    // All 3 tic-tac-toe columns.
+      [0,4,8],[2,4,6],            // Both tic-tac-toe diagonals.
+    ];
+    return win;
+  }
+
+  // Constructs an array for the values that the player selected in the game.
+  const playerArray = (playerMark) => {
+    let playerArray = [];
+    let gameArray = gameBoard.getBoard();
+    for (i = 0; i < gameArray.length; i++) {
+      if (gameArray[i] == playerMark) {
+        playerArray.push(i);
+      }
+    }
+    return playerArray;
+  }
+
+  // Checks if win condition is met with current player values.
+  const winCheck = () => {
+    let win = winCondition();
+    let player = playerArray(currentPlayerMark());
+    for (i = 0; i < win.length; i++) {     
+      for (j = 0; j < player.length; j++) {
+        const a = win[i].join('');                  // converts values into
+        const b = player.slice(j, j+3).join('');    // string for compare.
+        if (a == b) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  return {playRound, currentPlayerMark, currentRound, getGameEnd};
 })();
