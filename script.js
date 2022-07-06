@@ -57,13 +57,28 @@ const gameBoard = (() => {
   const form = document.querySelector("form");
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const p1Name = e.target.children[0].children[0].children[1].value;
-    const p1Mark = e.target.children[0].children[1].children[1].value;
-    const p2Name = e.target.children[1].children[0].children[1].value;
-    const p2Mark = e.target.children[1].children[1].children[1].value;
-    gameController.setPlayers(p1Name, p1Mark, p2Name, p2Mark);
+    const p1Name = e.target.children[0].children[0].children[1];
+    const p1Mark = e.target.children[0].children[1].children[1];
+    const p2Name = e.target.children[1].children[0].children[1];
+    const p2Mark = e.target.children[1].children[1].children[1];
+    gameController.setPlayers(p1Name.value, p1Mark.value, p2Name.value, p2Mark.value);
     gameController.setGameState(1);
+    formToggle("disable", p1Name, p1Mark, p2Name, p2Mark);
   });
+
+  const formToggle = (formState, p1Name, p1Mark, p2Name, p2Mark) => {
+    if (formState = "disable") {
+      p1Name.setAttribute("disabled", "disabled");
+      p1Mark.setAttribute("disabled", "disabled");
+      p2Name.setAttribute("disabled", "disabled");
+      p2Mark.setAttribute("disabled", "disabled");
+    } else if (formState = "enable") {
+      p1Name.setAttribute("disabled", "disabled");
+      p1Mark.setAttribute("disabled", "disabled");
+      p2Name.setAttribute("disabled", "disabled");
+      p2Mark.setAttribute("disabled", "disabled");
+    }
+  }
 
 
   return {getBoard, placeMarkInGrid, placeMarkInArray};
