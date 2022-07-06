@@ -7,6 +7,12 @@ const Player = (name, mark) => {
 }
 
 const gameBoard = (() => {
+  const gameContainer = document.querySelectorAll(".game-container > div");
+  const form = document.querySelector("form");
+  const messageContainer = document.querySelector(".message-container");
+  const message = document.getElementById("message");
+  const replayButton = document.getElementById("replay-button");
+
   // Initializes game board array values.
   let board = ['','','','','','','','',''];
 
@@ -20,11 +26,11 @@ const gameBoard = (() => {
     gameContainer.forEach(cell => {
       cell.innerHTML = "";
     });
+    gameController.setCurrentRound(1);
   }
 
   // Adds interactivity with tic-tac-toe grid and calls upon the
   // playRound function.
-  const gameContainer = document.querySelectorAll(".game-container > div");
   gameContainer.forEach(cell => {
     cell.addEventListener("click", (e) => {
       if (gameController.getGameState() == 2) {
@@ -61,7 +67,6 @@ const gameBoard = (() => {
 
   // Sets player1 and player2 names and marks and enables interactivity with
   // the tic-tac-toe board.
-  const form = document.querySelector("form");
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const p1Name = e.target.children[0].children[0].children[1];
@@ -77,6 +82,8 @@ const gameBoard = (() => {
     e.preventDefault();
     if (gameController.getGameState() == 0) {
       return console.log("game hasn't started for resetting");
+    } else if (gameController.getGameState() == 2) {
+      messageContainer.setAttribute("id", "hidden");
     }
     gameController.setGameState(0);
     const p1Name = e.target.children[0].children[0].children[1];
@@ -85,7 +92,6 @@ const gameBoard = (() => {
     const p2Mark = e.target.children[1].children[1].children[1];
     formToggle("enable", p1Name, p1Mark, p2Name, p2Mark);
     resetBoard();
-    gameController.setCurrentRound(1);
   });
 
   const formToggle = (formState, p1Name, p1Mark, p2Name, p2Mark) => {
@@ -102,8 +108,27 @@ const gameBoard = (() => {
     }
   }
 
+  const endGame = (winnerName) => {
+    messageContainer.setAttribute("id", "visible");
+    if (winnerName == "tied") {
+      message.innerText = "Game is tied!";
+    } else {
+      message.innerText = `${winnerName} is the winner!`;
+    }
+  }
 
-  return {getBoard, placeMarkInGrid, placeMarkInArray};
+  replayButton.addEventListener("click", () => {
+    if (gameController.getGameState() < 2) {
+      return;
+    }
+
+    gameController.setGameState(1);
+    resetBoard();
+    messageContainer.setAttribute("id", "hidden");
+
+  });  
+
+  return {getBoard, placeMarkInGrid, placeMarkInArray, endGame};
 })();
 
 const gameController = (() => {
@@ -155,13 +180,16 @@ const gameController = (() => {
     if (getCurrentRound() >= 5) {
       if (winCheck()) {
         setGameState(2);
-        return console.log(`winner, ${currentPlayerName()}`);
+        const winner = currentPlayerName();
+        gameBoard.endGame(winner);
+        return console.log(`winner, ${winner}`);
       } 
     }
     
     round++;
     if (round > 9) {
       setGameState(2);
+      gameBoard.endGame("tied");
       return console.log("game over");
     }
   }
@@ -194,8 +222,9 @@ const gameController = (() => {
     for (i = 0; i < win.length; i++) {     
       for (j = 0; j < player.length; j++) {
         const a = win[i].join('');                  // converts values into
-        const b = player.slice(j, j+3).join('');    // string for compare.
-        if (a == b) {
+        // const b = player.slice(j, j+3).join('');    // string for compare.
+        const b = player.join('');    // string for compare.
+        if (b.includes(a)) {
           return true;
         }
       }

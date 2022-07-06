@@ -10,7 +10,7 @@
   top: 0px;
   left: 0px;
   width: 100vw;
-  height: 100vh;
+  /* height: 100vh; */
   justify-content: center;
   align-items: center;
 }
@@ -93,3 +93,6 @@ span > input {
   padding: 0.5rem 1.25rem;
 }
 
+#hidden {
+  display: none;
+}
