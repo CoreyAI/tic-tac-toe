@@ -15,6 +15,13 @@ const gameBoard = (() => {
     return board;
   }
 
+  const resetBoard = () => {
+    board = ['','','','','','','','','']
+    gameContainer.forEach(cell => {
+      cell.innerHTML = "";
+    });
+  }
+
   // Adds interactivity with tic-tac-toe grid and calls upon the
   // playRound function.
   const gameContainer = document.querySelectorAll(".game-container > div");
@@ -66,17 +73,32 @@ const gameBoard = (() => {
     formToggle("disable", p1Name, p1Mark, p2Name, p2Mark);
   });
 
+  form.addEventListener("reset", (e) => {
+    e.preventDefault();
+    if (gameController.getGameState() == 0) {
+      return console.log("game hasn't started for resetting");
+    }
+    gameController.setGameState(0);
+    const p1Name = e.target.children[0].children[0].children[1];
+    const p1Mark = e.target.children[0].children[1].children[1];
+    const p2Name = e.target.children[1].children[0].children[1];
+    const p2Mark = e.target.children[1].children[1].children[1];
+    formToggle("enable", p1Name, p1Mark, p2Name, p2Mark);
+    resetBoard();
+    gameController.setCurrentRound(1);
+  });
+
   const formToggle = (formState, p1Name, p1Mark, p2Name, p2Mark) => {
-    if (formState = "disable") {
+    if (formState == "disable") {
       p1Name.setAttribute("disabled", "disabled");
       p1Mark.setAttribute("disabled", "disabled");
       p2Name.setAttribute("disabled", "disabled");
       p2Mark.setAttribute("disabled", "disabled");
-    } else if (formState = "enable") {
-      p1Name.setAttribute("disabled", "disabled");
-      p1Mark.setAttribute("disabled", "disabled");
-      p2Name.setAttribute("disabled", "disabled");
-      p2Mark.setAttribute("disabled", "disabled");
+    } else if (formState == "enable") {
+      p1Name.removeAttribute("disabled", "disabled");
+      p1Mark.removeAttribute("disabled", "disabled");
+      p2Name.removeAttribute("disabled", "disabled");
+      p2Mark.removeAttribute("disabled", "disabled");
     }
   }
 
@@ -113,8 +135,12 @@ const gameController = (() => {
   }
 
   // Returns the current round value.
-  const currentRound = () => {
+  const getCurrentRound = () => {
     return round;
+  }
+
+  const setCurrentRound = (num) => {
+    round = num;
   }
 
   // General game logic used to progress and evaluate game state.
@@ -126,7 +152,7 @@ const gameController = (() => {
     gameBoard.placeMarkInGrid(cellName);
     gameBoard.placeMarkInArray(cellName);
     
-    if (currentRound() >= 5) {
+    if (getCurrentRound() >= 5) {
       if (winCheck()) {
         setGameState(2);
         return console.log(`winner, ${currentPlayerName()}`);
@@ -185,5 +211,5 @@ const gameController = (() => {
     player2.setMark(player2Mark);
   }
 
-  return {playRound, currentPlayerMark, currentRound, getGameState, setGameState, setPlayers};
+  return {playRound, currentPlayerMark, getCurrentRound, setCurrentRound, getGameState, setGameState, setPlayers};
 })();
