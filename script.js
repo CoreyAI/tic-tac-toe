@@ -7,6 +7,7 @@ const Player = (name, mark) => {
 }
 
 const gameBoard = (() => {
+  // Initializing all modifiable/scannable DOM elements.
   const gameContainer = document.querySelectorAll(".game-container > div");
   const form = document.querySelector("form");
   const messageContainer = document.querySelector(".message-container");
@@ -21,6 +22,7 @@ const gameBoard = (() => {
     return board;
   }
 
+  // Resets the board array, the web page board text, and sets round back to 1.
   const resetBoard = () => {
     board = ['','','','','','','','','']
     gameContainer.forEach(cell => {
@@ -34,11 +36,9 @@ const gameBoard = (() => {
   gameContainer.forEach(cell => {
     cell.addEventListener("click", (e) => {
       if (gameController.getGameState() == 2) {
-        console.log("game is over");
+        return
       } else if (gameController.getGameState() == 0) {
-        console.log("press start game to play");
         flashPlayButton();
-
       } else {
         gameController.playRound(e.target.className, e.target.innerText);
       }
@@ -78,10 +78,11 @@ const gameBoard = (() => {
     formToggle("disable", p1Name, p1Mark, p2Name, p2Mark);
   });
 
+  // Resets the game state and re-enables the user name and mark form input.
   form.addEventListener("reset", (e) => {
     e.preventDefault();
     if (gameController.getGameState() == 0) {
-      return console.log("game hasn't started for resetting");
+      return
     } else if (gameController.getGameState() == 2) {
       messageContainer.setAttribute("id", "hidden");
     }
@@ -94,6 +95,8 @@ const gameBoard = (() => {
     resetBoard();
   });
 
+  // Toggles for form between enabled and disabled state to prevent
+  // user from modifying user details while game is being played.
   const formToggle = (formState, p1Name, p1Mark, p2Name, p2Mark) => {
     if (formState == "disable") {
       p1Name.setAttribute("disabled", "disabled");
@@ -108,6 +111,8 @@ const gameBoard = (() => {
     }
   }
 
+  // Outputs the appropriate end game message for user and shows the
+  // replay game button.
   const endGame = (winnerName) => {
     messageContainer.setAttribute("id", "visible");
     if (winnerName == "tied") {
@@ -117,6 +122,8 @@ const gameBoard = (() => {
     }
   }
 
+  // Listens for reset button activation, and appropriately resets
+  // the game state.
   replayButton.addEventListener("click", () => {
     if (gameController.getGameState() < 2) {
       return;
@@ -136,7 +143,6 @@ const gameController = (() => {
   const player1 = Player("player1", "X");
   const player2 = Player("player2", "O");
   let round = 1;
-
   let gameState = 0;  // 0 = pregame, 1 = game, 2 = endgame.
   
   // Getter for the end game state.
@@ -164,6 +170,7 @@ const gameController = (() => {
     return round;
   }
 
+  // Setter for current round value.
   const setCurrentRound = (num) => {
     round = num;
   }
@@ -182,7 +189,6 @@ const gameController = (() => {
         setGameState(2);
         const winner = currentPlayerName();
         gameBoard.endGame(winner);
-        return console.log(`winner, ${winner}`);
       } 
     }
     
@@ -190,10 +196,11 @@ const gameController = (() => {
     if (round > 9) {
       setGameState(2);
       gameBoard.endGame("tied");
-      return console.log("game over");
     }
   }
 
+  // Formulates a 2D array containing all of the winning
+  // conditions of tic-tac-toe.
   const winCondition = () => {
     let win = [
       [0,1,2],[3,4,5],[6,7,8],    // All 3 tic-tac-toe rows.
@@ -219,12 +226,15 @@ const gameController = (() => {
   const winCheck = () => {
     let win = winCondition();
     let player = playerArray(currentPlayerMark());
-    for (i = 0; i < win.length; i++) {     
-      for (j = 0; j < player.length; j++) {
-        const a = win[i].join('');                  // converts values into
-        // const b = player.slice(j, j+3).join('');    // string for compare.
-        const b = player.join('');    // string for compare.
-        if (b.includes(a)) {
+    for (i = 0; i < win.length; i++) {            // # of winning states.
+      let count = 0;
+      for (j = 0; j < win[i].length; j++) {       // 3 winning number combo.
+        for (k = 0; k < player.length; k++) {     // 3-5 numbers per player.
+          if (win[i][j] == player[k]) {              
+            count++;                              // Count determines number
+          }                                       // of matches between player
+        }                                         // values and winning combo.
+        if (count == 3) {
           return true;
         }
       }
@@ -240,5 +250,6 @@ const gameController = (() => {
     player2.setMark(player2Mark);
   }
 
-  return {playRound, currentPlayerMark, getCurrentRound, setCurrentRound, getGameState, setGameState, setPlayers};
+  return {playRound, currentPlayerMark, getCurrentRound, setCurrentRound, 
+    getGameState, setGameState, setPlayers};
 })();
