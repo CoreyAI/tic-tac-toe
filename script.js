@@ -22,6 +22,10 @@ const gameBoard = (() => {
     cell.addEventListener("click", (e) => {
       if (gameController.getGameState() == 2) {
         console.log("game is over");
+      } else if (gameController.getGameState() == 0) {
+        console.log("press start game to play");
+        flashPlayButton();
+
       } else {
         gameController.playRound(e.target.className, e.target.innerText);
       }
@@ -38,6 +42,12 @@ const gameBoard = (() => {
   const placeMarkInArray = (cellName) => {
     let index = parseInt(cellName.slice(1)) - 1;
     board[index] = gameController.currentPlayerMark();
+  }
+
+  const flashPlayButton = () => {
+    const playButton = document.getElementById("play-button");
+    playButton.setAttribute("class", "play-button-highlight");
+    setTimeout(() => playButton.removeAttribute("class", "play-button-highlight"), 250);
   }
 
   return {getBoard, placeMarkInGrid, placeMarkInArray};
