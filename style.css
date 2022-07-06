@@ -49,13 +49,30 @@ h1 {
 }
 
 .UI-buttons {
-  /* margin: 10px 2px; */
   display: flex;
   justify-content: center;
 }
 
 .UI-buttons > button {
   margin: 10px 5px;
+}
+
+.play-button-highlight {
+  border: 2px solid red;
+}
+
+
+form > div {
+  margin: 0.5rem 0rem;
+}
+
+span {
+  margin: 0rem 0.5rem;
+}
+
+span > input {
+  width: 5rem;
+  /* margin: 0px 1rem; */
 }
 
 .message-container {
@@ -75,3 +92,4 @@ h1 {
   font-size: 1.5rem;
   padding: 0.5rem 1.25rem;
 }
+
