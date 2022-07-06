@@ -44,11 +44,27 @@ const gameBoard = (() => {
     board[index] = gameController.currentPlayerMark();
   }
 
+  // Highlights the play button when user attempts to play game without adding
+  // users. 
   const flashPlayButton = () => {
     const playButton = document.getElementById("play-button");
     playButton.setAttribute("class", "play-button-highlight");
     setTimeout(() => playButton.removeAttribute("class", "play-button-highlight"), 250);
   }
+
+  // Sets player1 and player2 names and marks and enables interactivity with
+  // the tic-tac-toe board.
+  const form = document.querySelector("form");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const p1Name = e.target.children[0].children[0].children[1].value;
+    const p1Mark = e.target.children[0].children[1].children[1].value;
+    const p2Name = e.target.children[1].children[0].children[1].value;
+    const p2Mark = e.target.children[1].children[1].children[1].value;
+    gameController.setPlayers(p1Name, p1Mark, p2Name, p2Mark);
+    gameController.setGameState(1);
+  });
+
 
   return {getBoard, placeMarkInGrid, placeMarkInArray};
 })();
@@ -146,5 +162,13 @@ const gameController = (() => {
     return false;
   }
 
-  return {playRound, currentPlayerMark, currentRound, getGameState, setGameState};
+  // Setter for players.
+  const setPlayers = (player1Name, player1Mark, player2Name, player2Mark) => {
+    player1.setName(player1Name);
+    player1.setMark(player1Mark);
+    player2.setName(player2Name);
+    player2.setMark(player2Mark);
+  }
+
+  return {playRound, currentPlayerMark, currentRound, getGameState, setGameState, setPlayers};
 })();
